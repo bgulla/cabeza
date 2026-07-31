@@ -11,19 +11,19 @@ Dumps every HTTP header and request detail that reaches it. Useful for inspectin
 
 ## Helm
 
-The chart is published to GHCR as an OCI artifact and is designed to run on Palantir Apollo / FedStart.
+The chart is published to GHCR as an OCI artifact.
 
 ```bash
 helm install cabeza oci://ghcr.io/bgulla/charts/cabeza --version 1.0.0001 \
-  --set baseURL=https://<your-domain>.palantirfedstart.com \
+  --set baseURL=https://<your-domain> \
   --set domainAlias=DEFAULT
 ```
 
-### Minimal Apollo overrides
+### Minimal overrides
 
 ```yaml
 overrides:
-  baseURL: "https://<your-domain>.palantirfedstart.com"
+  baseURL: "https://<your-domain>"
   domainAlias: "DEFAULT"
   contextPath: "/cabeza"
 ```
@@ -33,15 +33,13 @@ overrides:
 | Value | Default | Description |
 |---|---|---|
 | `baseURL` | `__REPLACE_ME_BASE_URL` | Root URL (required) |
-| `domainAlias` | `DEFAULT` | Mission Manager domain alias |
-| `contextPath` | `/cabeza` | URL prefix for SPP routing |
+| `domainAlias` | `DEFAULT` | Domain alias for routing |
+| `contextPath` | `/cabeza` | URL prefix |
 | `replicas` | `2` | Pod count |
 | `image.repository` | `ghcr.io/bgulla/cabeza` | Container image |
 | `image.tag` | *(appVersion)* | Image tag |
-| `tls.enabled` | `true` | Mount Rubix pod cert |
+| `tls.enabled` | `true` | Mount pod cert |
 | `tls.certSecret` | `cert-cabeza` | Secret name for TLS cert |
-
-The chart wires up the Rubix SPP annotation, pod cert injection, node affinity for the `fedstart` instance group, and pod anti-affinity across zones and hosts automatically.
 
 ## Local development
 
