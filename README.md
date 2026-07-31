@@ -2,7 +2,7 @@
 
 [![Build](https://github.com/bgulla/cabeza/actions/workflows/docker.yml/badge.svg)](https://github.com/bgulla/cabeza/actions/workflows/docker.yml)
 [![GHCR](https://img.shields.io/badge/ghcr.io-bgulla%2Fcabeza-blue?logo=docker&logoColor=white)](https://github.com/bgulla/cabeza/pkgs/container/cabeza)
-[![Helm](https://img.shields.io/badge/helm-oci%3A%2F%2Fghcr.io%2Fbgulla%2Fcabeza-blue?logo=helm&logoColor=white)](https://github.com/bgulla/cabeza/pkgs/container/cabeza-chart)
+[![Helm](https://img.shields.io/badge/helm-oci%3A%2F%2Fghcr.io%2Fbgulla%2Fcharts%2Fcabeza-blue?logo=helm&logoColor=white)](https://github.com/bgulla/cabeza/pkgs/container/charts%2Fcabeza)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 
 Dumps every HTTP header and request detail that reaches it. Useful for inspecting what a Kubernetes ingress, load balancer, or reverse proxy actually forwards to your pods.
@@ -14,7 +14,7 @@ Dumps every HTTP header and request detail that reaches it. Useful for inspectin
 The chart is published to GHCR as an OCI artifact and is designed to run on Palantir Apollo / FedStart.
 
 ```bash
-helm install cabeza oci://ghcr.io/bgulla/cabeza --version 1.0.0001 \
+helm install cabeza oci://ghcr.io/bgulla/charts/cabeza --version 1.0.0001 \
   --set baseURL=https://<your-domain>.palantirfedstart.com \
   --set domainAlias=DEFAULT
 ```

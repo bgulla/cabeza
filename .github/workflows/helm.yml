@@ -30,4 +30,4 @@ jobs:
         run: helm package charts/cabeza --destination .helm-dist
 
       - name: Push chart
-        run: helm push .helm-dist/cabeza-*.tgz oci://ghcr.io/bgulla
+        run: helm push .helm-dist/cabeza-*.tgz oci://ghcr.io/bgulla/charts
