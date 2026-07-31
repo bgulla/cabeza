@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "cabeza.fullname" . }}
+  labels:
+    {{- include "cabeza.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      {{- include "cabeza.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "cabeza.selectorLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "cabeza.serviceAccountName" . }}
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 65532
+        seccompProfile:
+          type: RuntimeDefault
+      affinity:
+        {{- toYaml .Values.affinity | nindent 8 }}
+      containers:
+        - name: cabeza
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          env:
+            - name: PORT
+              value: "8080"
+            - name: SSL_CERT_FILE
+              value: /etc/ssl/rubix-ca/ca.pem
+          livenessProbe:
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            - name: tls-external-ca-bundle
+              mountPath: /etc/ssl/rubix-ca
+            {{- if .Values.tls.enabled }}
+            - name: cert-secret-volume
+              mountPath: /mnt/secrets/certs
+              readOnly: true
+            {{- end }}
+      volumes:
+        - name: tmp
+          emptyDir: {}
+        - name: tls-external-ca-bundle
+          configMap:
+            name: tls-external-ca-pem-bundle
+            items:
+              - key: ca.pem
+                path: ca.pem
+        {{- if .Values.tls.enabled }}
+        - name: cert-secret-volume
+          secret:
+            secretName: {{ .Values.tls.certSecret }}
+            defaultMode: 0640
+        {{- end }}

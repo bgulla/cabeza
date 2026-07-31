@@ -1,0 +1,33 @@
+name: Helm
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "charts/**"
+  workflow_dispatch:
+
+jobs:
+  package-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+
+      - name: Log in to GHCR
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ghcr.io --username ${{ github.actor }} --password-stdin
+
+      - name: Lint chart
+        run: helm lint charts/cabeza
+
+      - name: Package chart
+        run: helm package charts/cabeza --destination .helm-dist
+
+      - name: Push chart
+        run: helm push .helm-dist/cabeza-*.tgz oci://ghcr.io/bgulla

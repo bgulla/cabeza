@@ -1,0 +1,78 @@
+# Default values for cabeza
+
+# baseURL -- Configures the root URL for cabeza (required)
+baseURL: "__REPLACE_ME_BASE_URL"
+# domainAlias -- Mission Manager domain alias for the baseURL
+domainAlias: "DEFAULT"
+contextPath: "/cabeza"
+
+fullnameOverride: cabeza
+
+replicas: 2
+
+image:
+  repository: ghcr.io/bgulla/cabeza
+  tag: ""  # defaults to .Chart.AppVersion
+  pullPolicy: IfNotPresent
+
+service:
+  port: 80
+  targetPort: 8080
+
+serviceAccount:
+  create: true
+  name: ""
+  automountServiceAccountToken: false
+  annotations: {}
+
+tls:
+  # Mount the Rubix-injected pod cert into the container
+  enabled: true
+  certSecret: "cert-cabeza"
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 200m
+    memory: 128Mi
+
+livenessProbe:
+  httpGet:
+    path: /
+    port: http
+  initialDelaySeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /
+    port: http
+  initialDelaySeconds: 5
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: com.palantir.rubix/instance-group
+              operator: In
+              values:
+                - fedstart
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - podAffinityTerm:
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: cabeza
+          topologyKey: topology.kubernetes.io/zone
+        weight: 100
+    requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchLabels:
+            app.kubernetes.io/name: cabeza
+        topologyKey: kubernetes.io/hostname

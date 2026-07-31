@@ -3,6 +3,7 @@
 [![Build](https://github.com/bgulla/cabeza/actions/workflows/docker.yml/badge.svg)](https://github.com/bgulla/cabeza/actions/workflows/docker.yml)
 [![Image](https://ghcr-badge.egpl.dev/bgulla/cabeza/latest_tag?trim=major&label=ghcr&color=%2300ff41)](https://github.com/bgulla/cabeza/pkgs/container/cabeza)
 [![Image Size](https://ghcr-badge.egpl.dev/bgulla/cabeza/size?color=%2300ff41)](https://github.com/bgulla/cabeza/pkgs/container/cabeza)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 
 Dumps every HTTP header and request detail that reaches it. Useful for inspecting what a Kubernetes ingress, load balancer, or reverse proxy actually forwards.
 

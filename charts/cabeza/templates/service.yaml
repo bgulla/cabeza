@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "cabeza.fullname" . }}
+  labels:
+    {{- include "cabeza.labels" . | nindent 4 }}
+  annotations:
+    com.palantir.rubix.service.spp/v3: {{ printf `{"endpoints": [{"name": "service", "prefix": "%s", "domain-aliases": ["%s"]}]}` .Values.contextPath .Values.domainAlias | quote }}
+    com.palantir.rubix.service/pod-cert: '{}'
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "cabeza.selectorLabels" . | nindent 4 }}

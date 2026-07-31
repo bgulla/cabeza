@@ -1,0 +1,5 @@
+cabeza is running at {{ .Values.baseURL }}{{ .Values.contextPath }}
+
+Hit any path to dump all headers and request details reaching this pod:
+
+  curl {{ .Values.baseURL }}{{ .Values.contextPath }}/
